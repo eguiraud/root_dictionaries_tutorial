@@ -6,9 +6,12 @@ ROOT ships dictionaries for all of its own classes, but to "teach" ROOT to perfo
 
 There are several ways to create ROOT dictionaries:
 
-- the [interactive way](#the-interactive-way), via the ROOT prompt
+- the [interactive way](#the-interactive-way), via the ROOT prompt and ACLiC
 - the [command line way](#the-command-line-way), via the `rootcling` command
 - the [CMake way](#the-cmake-way)
+
+The rest of this document provides a quick-start introduction for each of these approaches and answer to some frequently asked questions on the topic.
+For each approach an in-depth explanation is available in the corresponding sub-directory (just follow the links).
 
 <details>
 <summary>All examples assume the following source files are present:</summary>
@@ -17,6 +20,7 @@ There are several ways to create ROOT dictionaries:
 class TwoInts {
    int _a;
    int _b;
+
 public:
    TwoInts() {}
    TwoInts(int a, int b) : _a(a), _b(b) {}
@@ -49,11 +53,32 @@ root [3] f.WriteObjectAny(&ti, "TwoInts", "ti");
 root [4] TwoInts *ti_read_back = f.Get<TwoInts>("ti");
 ```
 
-See the example [here](???) for more details.
+See [here](???) for more details.
 
-### The command line way
+### The command line way, via the `rootcling` command
 
-See the example [here](???).
+Given the following `LinkDef.h` file:
+
+```cpp
+#ifdef __CLING__
+#pragma link C++ class TwoInts;
+#endif
+```
+
+dictionaries for the `TwoInts` class can be generated with the following shell command:
+
+```bash
+$ rootcling twoints_dict.cpp twoints.hpp LinkDef.h
+```
+
+The `twoints_dict.cpp` source file that is generated this way must be compiled together with the application that
+performs I/O of the `TwoInts` type.
+
+The `genreflex` command is also available. This is a different front-end to the exact same technology.
+The main difference between `genreflex` and `rootcling` is that the former takes an XML as input instead of a `LinkDef` file.
+See `genreflex --help` for more information.
+
+See [here](???) for more details and a full example.
 
 ### The CMake way
 
