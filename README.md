@@ -6,9 +6,9 @@ ROOT ships dictionaries for all of its own classes, but to "teach" ROOT to perfo
 
 There are several ways to create ROOT dictionaries:
 
-- the [interactive way](#the-interactive-way), via the ROOT prompt and ACLiC
-- the [command line way](#the-command-line-way), via the `rootcling` command
-- the [CMake way](#the-cmake-way)
+- [the interactive way](#the-interactive-way), via the ROOT prompt and ACLiC
+- [the command line way](#the-command-line-way), via the `rootcling` command
+- [the CMake way](#the-cmake-way)
 
 The rest of this document provides a quick-start introduction for each of these approaches and answer to some frequently asked questions on the topic.
 For each approach an in-depth explanation is available in the corresponding sub-directory (just follow the links).
@@ -40,7 +40,7 @@ TwoInts& TwoInts::SetB(int b) { _b = b; return *this; }
 ```
 </details>
 
-### The interactive way
+### The interactive way, using ACLiC
 
 When you compile code from the ROOT prompt using ACLiC, ROOT automatically creates dictionaries for the types defined in that code:
 
@@ -109,14 +109,14 @@ A default constructor (or at least an _I/O constructor_, see ???) is mandatory.
 
 Generating dictionaries is precisely "asking the interpreter" the information required to perform I/O of a given C++ type.
 The code inside dictionaries then triggers the registration of a class with ROOT's infrastructure at program initialization time,
-so ROOT can "find back" I/O information on the class.
+so ROOT can automatically "find back" information on the class during program execution.
 For very simple types, like structs with data members of fundamental types, ROOT can actually perform I/O without dictionaries;
 we plan to extend this capability to more types in the future.
 
 ### Writing to a TFile vs writing into a TTree
 
-ROOT data is very often stored inside `TTree` objects (which are in turn stored inside ROOT files, often manipulated via the TFile class).
-ROOT can store your custom types either directly inside a TFile or as a TTree "branch" (i.e. inside a `TTree`).
+ROOT data is very often stored inside `TTree` objects (which are in turn stored inside ROOT files, often manipulated via the TFile class),
+but it is also possible to store your custom types directly inside a TFile.
 To pick one or the other option, think of TFiles as directories and TTrees as databases or datasets: if you want to save a single object to a ROOT file,
 you can store it directly in the TFile (e.g. via `TFile::WriteObjectAny`); if you want to store several different values of a given type and
 later access all of those values as part of a single dataset/database, then it's probably better to create a `TTree` with the appropriate schema,
