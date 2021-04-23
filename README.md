@@ -10,14 +10,16 @@ There are several ways to create ROOT dictionaries:
 - the [command line way](#the-command-line-way), via the `rootcling` command
 - the [CMake way](#the-cmake-way)
 
-The following examples assume the following files are present:
-
+<details>
+<summary>All examples assume the following source files are present:</summary>
 ```cpp
 // twoints.hpp
 class TwoInts {
    int _a;
    int _b;
 public:
+   TwoInts() {}
+   TwoInts(int a, int b) : _a(a), _b(b) {}
    int GetA() const;
    int GetB() const;
    TwoInts &SetA(int a);
@@ -32,6 +34,7 @@ int TwoInts::GetB() const { return _b; }
 TwoInts& TwoInts::SetA(int a) { _a = a; return *this; }
 TwoInts& TwoInts::SetB(int b) { _b = b; return *this; }
 ```
+</details>
 
 ### The interactive way
 
@@ -39,9 +42,14 @@ When you compile code from the ROOT prompt using ACLiC, ROOT automatically creat
 
 ```cpp
 root [0] .L twoints.cpp+ // load twoints.cpp (`.L`) after compiling it into a library (`+`)
+Info in <TUnixSystem::ACLiC>: creating shared library /home/blue/Scratchpad/work/root_dictionaries_example/interactively_with_aclic/./twoints_cpp.so
+root [1] TwoInts ti(1,2);
+root [2] TFile f("f.root", "recreate");
+root [3] f.WriteObjectAny(&ti, "TwoInts", "ti");
+root [4] TwoInts *ti_read_back = f.Get<TwoInts>("ti");
 ```
 
-See the example [here](???).
+See the example [here](???) for more details.
 
 ### The command line way
 
@@ -65,9 +73,11 @@ If your type inherits from `TObject` (which is _not_ a requirement), then a `Cla
 A full list of these macros with explanations is available at ???.
 
 ### Are there any restrictions on types serialized, e.g. their layout or behavior?
+
 The most notable limiations are that ROOT does not support I/O of `std::shared_ptr`, `std::optional` and `std::variant`.
 These types or classes with data members of this type cannot yet be serialized.
-??? Mandatory default constructor?
+A default constructor (or at least an _I/O constructor_, see ???) is mandatory.
+??? Outlined destructor?
 ??? Multiple inheritance?
 
 ### Why do I need to generate dictionaries, can't ROOT just ask cling, the C++ interpreter, this information?
@@ -77,3 +87,12 @@ The code inside dictionaries then triggers the registration of a class with ROOT
 so ROOT can "find back" I/O information on the class.
 For very simple types, like structs with data members of fundamental types, ROOT can actually perform I/O without dictionaries;
 we plan to extend this capability to more types in the future.
+
+### Writing to a TFile vs writing into a TTree
+
+ROOT data is very often stored inside `TTree` objects (which are in turn stored inside ROOT files, often manipulated via the TFile class).
+ROOT can store your custom types either directly inside a TFile or as a TTree "branch" (i.e. inside a `TTree`).
+To pick one or the other option, think of TFiles as directories and TTrees as databases or datasets: if you want to save a single object to a ROOT file,
+you can store it directly in the TFile (e.g. via `TFile::WriteObjectAny`); if you want to store several different values of a given type and
+later access all of those values as part of a single dataset/database, then it's probably better to create a `TTree` with the appropriate schema,
+add the appropriate entries to it and then save the `TTree` to a file.
