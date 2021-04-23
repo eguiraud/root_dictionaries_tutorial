@@ -15,6 +15,7 @@ For each approach an in-depth explanation is available in the corresponding sub-
 
 <details>
 <summary>All examples assume the following source files are present:</summary>
+   
 ```cpp
 // twoints.hpp
 class TwoInts {
@@ -29,7 +30,9 @@ public:
    TwoInts &SetA(int a);
    TwoInts &SetB(int b);
 };
+```
 
+```
 // twoints.cpp
 #include "twoints.hpp"
 
