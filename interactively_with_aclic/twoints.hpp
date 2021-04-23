@@ -1,3 +1,5 @@
+#pragma once
+
 class TwoInts {
    int _a;
    int _b;
