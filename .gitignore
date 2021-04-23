@@ -2,3 +2,5 @@
 *.so
 *.d
 *.pcm
+*.rootmap
+tags
