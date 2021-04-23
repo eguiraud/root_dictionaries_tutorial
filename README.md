@@ -6,11 +6,11 @@ ROOT ships dictionaries for all of its own classes, but to "teach" ROOT to perfo
 
 There are several ways to create ROOT dictionaries:
 
-- [the interactive way](#the-interactive-way), via the ROOT prompt and ACLiC
-- [the command line way](#the-command-line-way), via the `rootcling` command
+- [the interactive way](#the-interactive-way-using-aclic), via the ROOT prompt and ACLiC
+- [the command line way](#the-command-line-way-via-the-rootcling-command), via the `rootcling` command
 - [the CMake way](#the-cmake-way)
 
-The rest of this document provides a quick-start introduction for each of these approaches and answer to some frequently asked questions on the topic.
+The rest of this document provides a quick-start introduction for each of these approaches and answer to some [frequently asked questions](#FAQ) on the topic.
 For each approach an in-depth explanation is available in the corresponding sub-directory (just follow the links).
 
 <details>
@@ -32,7 +32,7 @@ public:
 };
 ```
 
-```
+```cpp
 // twoints.cpp
 #include "twoints.hpp"
 
@@ -56,7 +56,7 @@ root [3] f.WriteObjectAny(&ti, "TwoInts", "ti");
 root [4] TwoInts *ti_read_back = f.Get<TwoInts>("ti");
 ```
 
-See [here](???) for more details.
+See [here](https://github.com/eguiraud/root_dictionaries_tutorial/tree/main/interactively_with_aclic) for more details.
 
 ### The command line way, via the `rootcling` command
 
@@ -81,7 +81,7 @@ The `genreflex` command is also available. This is a different front-end to the 
 The main difference between `genreflex` and `rootcling` is that the former takes an XML as input instead of a `LinkDef` file.
 See `genreflex --help` for more information.
 
-See [here](???) for more details and a full example.
+See [here](https://github.com/eguiraud/root_dictionaries_tutorial/tree/main/from_the_command_line_with_rootcling) for more details and a full example.
 
 ### The CMake way
 
@@ -94,14 +94,16 @@ ROOT_GENERATE_DICTIONARY(twoints_dict twoints.hpp LINKDEF LinkDef.h)
 
 The CMake lines above instruct the build system to generate a dictionary file called `twoints_dict.cxx` as if `rootcling` was invoked like above.
 
-See the example [here](???) for more details and a full example.
+See the example [here](https://github.com/eguiraud/root_dictionaries_tutorial/tree/main/with_cmake) for more details and a full example.
 
-### What is this `.pcm` file that gets created next to the dictionaries?
+### FAQ
+
+#### What is this `.pcm` file that gets created next to the dictionaries?
 
 ROOT PCM files contain objects that hold information about the persistified class (name, list of datamember's names, typename, byte offsets of data members).
 PCMs need to be stored next to the library that contains the compiled class for ROOT to automatically pick up this information, which is necessary for I/O (??? is this true?).
 
-### What about that `ClassDef` thing I have seen around?
+#### What about that `ClassDef` thing I have seen around?
 
 `ClassDef`, `ClassImpl` and similar are pre-processor macros that inject ROOT-specific methods and features into a given class.
 These are runtime reflection features such as the `IsA` method which returns a `TClass` representing an object's type (the full list of the features added by `ClassDef` can be found at ???).
@@ -109,7 +111,7 @@ You don't need to add `ClassDef` to your class if you don't require these featur
 If your type inherits from `TObject` (which is _not_ a requirement), then a `ClassDef` is required: it adds implementations for parts of `TObject`'s abstract interface.
 A full list of these macros with explanations is available at ???.
 
-### Are there any restrictions on types serialized, e.g. their layout or behavior?
+#### Are there any restrictions on types serialized, e.g. their layout or behavior?
 
 The most notable limiations are that ROOT does not support I/O of `std::shared_ptr`, `std::optional` and `std::variant`.
 These types or classes with data members of this type cannot yet be serialized.
@@ -117,7 +119,7 @@ A default constructor (or at least an _I/O constructor_, see ???) is mandatory.
 ??? Outlined destructor?
 ??? Multiple inheritance?
 
-### Why do I need to generate dictionaries, can't ROOT just ask cling, the C++ interpreter, this information?
+#### Why do I need to generate dictionaries, can't ROOT just ask cling, the C++ interpreter, this information?
 
 Generating dictionaries is precisely "asking the interpreter" the information required to perform I/O of a given C++ type.
 The code inside dictionaries then triggers the registration of a class with ROOT's infrastructure at program initialization time,
@@ -125,7 +127,7 @@ so ROOT can automatically "find back" information on the class during program ex
 For very simple types, like structs with data members of fundamental types, ROOT can actually perform I/O without dictionaries;
 we plan to extend this capability to more types in the future.
 
-### Writing to a TFile vs writing into a TTree
+#### Writing to a TFile vs writing into a TTree
 
 ROOT data is very often stored inside `TTree` objects (which are in turn stored inside ROOT files, often manipulated via the TFile class),
 but it is also possible to store your custom types directly inside a TFile.
