@@ -82,7 +82,16 @@ See [here](???) for more details and a full example.
 
 ### The CMake way
 
-See the example [here](???).
+The generation of ROOT dictionaries can be integrated with a project's CMake build.
+To this end, ROOT defines the `ROOT_GENERATE_DICTIONARY` CMake function. It can be used like this:
+
+```cmake
+ROOT_GENERATE_DICTIONARY(twoints_dict twoints.hpp LINKDEF LinkDef.h)
+```
+
+The CMake lines above instruct the build system to generate a dictionary file called `twoints_dict.cxx` as if `rootcling` was invoked like above.
+
+See the example [here](???) for more details and a full example.
 
 ### What is this `.pcm` file that gets created next to the dictionaries?
 
