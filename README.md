@@ -109,7 +109,20 @@ PCMs need to be stored next to the library that contains the compiled class for 
 These are runtime reflection features such as the `IsA` method which returns a `TClass` representing an object's type (the full list of the features added by `ClassDef` can be found at ???).
 You don't need to add `ClassDef` to your class if you don't require these features, but having a `ClassDef` might provide a small I/O performance benefit.
 If your type inherits from `TObject` (which is _not_ a requirement), then a `ClassDef` is required: it adds implementations for parts of `TObject`'s abstract interface.
-A full list of these macros with explanations is available at ???.
+A full list of these macros with explanations:
+
+```
+ClassDef: Regular
+ClassDefOverride: Use this one if your class definition use the c++ `override` keyword for virtual functions (If you use the regular ClassDef, the compiler might warn that the function declared in the ClassDef are missing the override keyword).
+ClassDefNV: Use if you class does not (and shoud not) have a virtual function table (i.e. no virtual function in the class and any of its base classes
+```
+In addtion we also have
+```
+ClassDefInline
+ClassDefInlineOverride
+ClassDefInlineNV
+```
+that can be used to create a class that is know to ROOT without generating a dictionary (this feature is still somewhat experimental).
 
 #### Are there any restrictions on types serialized, e.g. their layout or behavior?
 
