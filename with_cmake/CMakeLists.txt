@@ -9,6 +9,7 @@ message(STATUS "ROOT ${ROOT_VERSION} found at ${ROOT_BINDIR}")
 # This cmake function produces a file called twoints_dict.cxx at build time, as if by calling:
 # `rootcling twoints_dict.cxx twoints.h LinkDef.h`
 ROOT_GENERATE_DICTIONARY(twoints_dict twoints.hpp LINKDEF LinkDef.h)
+configure_file(twoints.hpp twoints.hpp COPYONLY)
 
 # Remember to add the dictionary to the list of source files!
 add_executable(readwrite_twoints readwrite_twoints.cpp twoints.cpp twoints_dict.cxx)
