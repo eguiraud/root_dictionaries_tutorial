@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: rootproject/root:latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Configure CMake
+        run: cmake -B ${{github.workspace}}/with_cmake/build with_cmake
+
+      - name: Build
+        run: make --directory=${{github.workspace}}/with_cmake/build
+
+      - name: Run
+        run: ./with_cmake/build/readwrite_twoints
