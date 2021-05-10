@@ -4,3 +4,4 @@
 *.pcm
 *.rootmap
 tags
+*build*
